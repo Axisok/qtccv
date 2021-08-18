@@ -207,7 +207,10 @@ while true do
 	else
 		hs:draw()
 
-		pcall(wc.update, wc, 0.5)
+		if (wc) then
+			pcall(wc.update, wc, 0.05)
+			
+		end
 		
 	end
 
