@@ -1,8 +1,8 @@
 -- Program to download and play bad apple on loop.
 
 local function getFile(name, lname)
-	local r = http.get("https://raw.githubusercontent.com/Axisok/qtccv/master/" .. name)
-	local f = fs.open(lname, "w")
+	local r = http.get("https://raw.githubusercontent.com/Axisok/qtccv/master/" .. name, nil, true)
+	local f = fs.open(lname, "wb")
 	f.write(r.readAll())
 	f.close()
 	

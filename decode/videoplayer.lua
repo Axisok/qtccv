@@ -198,10 +198,12 @@ while true do
 
 		hs.buffer = frame
 
-		for i = 1, #wc.instances do
-			wc.instances[i].playing = true
-			wc.instances[i].tick = 1
-			
+		if (wc) then
+			for i = 1, #wc.instances do
+				wc.instances[i].playing = true
+				wc.instances[i].tick = 1
+				
+			end
 		end
 
 	else
