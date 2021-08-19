@@ -1,7 +1,7 @@
 # QuadTree Compression for ComputerCraft Videos
 
 ## Sample
-Go on any computercraft machine and run `pastebin run KMRmKTc1` to play Bad Apple on it. If you have a speaker, it'll use it. If you have a monitor, it'll also use it. It works even on a normal computer since it only uses black and white.
+Go on any ComputerCraft (CC: Tweaked is the only one confirmed to work, earlier versions are probably not going to work) computer and run `pastebin run KMRmKTc1` to play Bad Apple on it. If you have a speaker, it'll use it. If you have a monitor, it'll also use it. It works even on a normal computer since it only uses black and white.
 
 ## Problem
 Videos are big, like really big. ComputerCraft only has 1 MB of space by default. I want to play Bad Apple!! on them at a decent resolution. I used a QuadTree structure to achieve that.

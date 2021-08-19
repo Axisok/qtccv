@@ -195,8 +195,10 @@ if __name__ == "__main__":
 	
 	# For debugging purposes, encodes a single image, also prints all bits as 1's and 0's on the console/terminal.
 	# Could break at any second with changes to other parts of the code, don't recommend relying on it for anything ever.
-	# That's also why it's not documented anywhere.
+	# That's also why it's not documented anywhere else.
+	# Also doesn't work well for .jpg so use .png instead.
 	if (image_input != ""):
+		print("Compressing image...")
 		out_bytes.debug = True
 		start_time = time.time()
 
