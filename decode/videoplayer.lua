@@ -21,6 +21,35 @@ local _height_bits
 
 local fi
 
+local arg = {...}
+
+local function findPer(pName)
+	if (peripheral.getName) then
+		local p = peripheral.find(pName)
+		local n
+
+		if (p) then
+			n = peripheral.getName(p)
+		end
+
+		return n, p
+
+	else
+		local d = {"top", "bottom", "right", "left", "front", "back"}
+		for i=1, #d do
+			if (peripheral.getType(d[i]) == pName) then
+				local p = peripheral.wrap(d[i])
+				local n = d[i]
+				return n, p
+				
+			end
+			
+		end
+
+	end
+
+end
+
 local function invertQuad(x, y, w, h)
 	for i=y, y+h-1 do
 		fi = frame[i]
@@ -81,11 +110,11 @@ local function readFrame()
 	w_bits = 0
 	h_bits = 0
 
-	while (math.pow(2, w_bits) <= width - fx) do
+	while (2^w_bits <= width - fx) do
 		w_bits = w_bits + 1
 	end
 	
-	while (math.pow(2, h_bits) <= height - fy) do
+	while (2^h_bits <= height - fy) do
 		h_bits = h_bits + 1
 	end
 
@@ -103,16 +132,41 @@ local function readFrame()
 
 end
 
-print("Reading file...")
+local loop = false
+for i=1, #arg do
+	if (arg[i] == "loop") then
+		loop = true
+		table.remove(arg, i)
+		break
 
+	end
+
+end
+
+print("Reading files...")
+
+local videofile = arg[1]
+local audiofile
+
+local dPos = videofile:find("%.")
+if (dPos) then
+	audiofile = videofile:sub(1, dPos-1) .. ".nbs"
+	
+else
+	audiofile = videofile .. ".nbs"
+	videofile = videofile .. ".qtv"
+
+end
+
+-- Read the audio file
 local wc
-if (fs.exists(arg[1] .. ".nbs")) then
-	local speaker = peripheral.find("speaker")
+if (audiofile and fs.exists(audiofile)) then
+	local dir, speaker = findPer("speaker")
 	
 	if (speaker ~= nil) then
 		wc = wave.createContext()
-		wc:addOutput(peripheral.getName(speaker))
-		local t = wave.loadTrack(arg[1] .. ".nbs")
+		wc:addOutput(dir)
+		local t = wave.loadTrack(audiofile)
 		wc:addInstance(wave.createInstance(t))
 		
 	end
@@ -120,9 +174,13 @@ if (fs.exists(arg[1] .. ".nbs")) then
 end
 
 
+-- Read the video file
+if (not fs.exists(videofile)) then
+	error("video file '" .. videofile .. "' not found.")
 
--- Read the file
-local f = fs.open(arg[1] .. ".qtv", "rb")
+end
+
+local f = fs.open(videofile, "rb")
 local fileString = f.readAll()
 data = {string.byte(fileString, 1, -1)}
 
@@ -138,11 +196,11 @@ height = reader:readNumber(9)+1
 _width_bits = 0
 _height_bits = 0
 
-while (math.pow(2, _width_bits) <= width) do
+while (2^_width_bits <= width) do
 	_width_bits = _width_bits + 1
 end
 
-while (math.pow(2, _height_bits) <= height) do
+while (2^_height_bits <= height) do
 	_height_bits = _height_bits + 1
 end
 
@@ -182,6 +240,10 @@ while true do
 	status, err = pcall(readFrame)
 
 	if (not status) then
+		if (not loop) then
+			break
+		end
+
 		reader:reset()
 		reader:readNumber(5)
 		reader:readNumber(10)
